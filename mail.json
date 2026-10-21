@@ -1,3 +1,5 @@
 {
-  "mails": []
+  "mails": [
+    { "id": "open-reward", "title": "게임 오픈 기념 보상", "titleEn": "Grand Opening Reward", "gold": 10000, "startsAt": "2026-10-01", "expiresAt": "2099-12-31" }
+  ]
 }
