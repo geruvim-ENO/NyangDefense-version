@@ -4,6 +4,9 @@
 $keyFile = Join-Path $env:USERPROFILE "NyangKeys\mail_signing_key.xml"
 if (-not (Test-Path $keyFile)) { throw "서명 키가 없어요: $keyFile" }
 $mailPath = Join-Path $Dir "mail.json"
+# 줄바꿈은 LF 로 통일해서 파일에 다시 쓴 뒤 서명 (윈도우 편집기의 CRLF 때문에 서명이 깨지지 않게)
+$text = [IO.File]::ReadAllText($mailPath, [Text.Encoding]::UTF8).Replace("`r`n", "`n")
+[IO.File]::WriteAllBytes($mailPath, (New-Object Text.UTF8Encoding($false)).GetBytes($text))
 $data = [IO.File]::ReadAllBytes($mailPath)
 # 형식 점검: 골드만 · 한도 · 중복 id
 $j = [Text.Encoding]::UTF8.GetString($data) | ConvertFrom-Json

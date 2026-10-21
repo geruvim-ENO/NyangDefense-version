@@ -1,0 +1,3 @@
+# 서명한 파일은 줄바꿈 변환 없이 그대로 (서명이 깨지지 않게)
+mail.json -text
+mail.sig -text
