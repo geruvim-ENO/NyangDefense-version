@@ -1,5 +1,3 @@
 {
-  "mails": [
-    { "id": "e2e-check", "title": "연결 확인", "titleEn": "Connection check", "gold": 1, "startsAt": "2026-10-01", "expiresAt": "2026-10-21" }
-  ]
+  "mails": []
 }

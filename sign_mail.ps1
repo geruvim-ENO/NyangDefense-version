@@ -1,6 +1,6 @@
 ﻿param([string]$Dir = $PSScriptRoot)
 # 우편 설정(mail.json)에 서명 → mail.sig. 개인키는 이 PC 의 %USERPROFILE%\NyangKeys\mail_signing_key.xml (저장소에는 없음).
-# 사용: powershell -File sign_mail.ps1   (mail.json 을 고친 뒤 실행, 그다음 mail.json · mail.sig 를 함께 커밋)
+# 사용: powershell -File sign_mail.ps1   (mail.json 을 고친 뒤 실행, 그다음 mail.json · mail.signed.json 을 함께 커밋)
 $keyFile = Join-Path $env:USERPROFILE "NyangKeys\mail_signing_key.xml"
 if (-not (Test-Path $keyFile)) { throw "서명 키가 없어요: $keyFile" }
 $mailPath = Join-Path $Dir "mail.json"
@@ -21,5 +21,8 @@ if (@($j.mails).Count -gt 50) { throw "우편은 한 번에 50개까지" }
 $rsa = New-Object Security.Cryptography.RSACryptoServiceProvider
 $rsa.FromXmlString([IO.File]::ReadAllText($keyFile))
 $sig = $rsa.SignData($data, [Security.Cryptography.HashAlgorithmName]::SHA256, [Security.Cryptography.RSASignaturePadding]::Pkcs1)
-[IO.File]::WriteAllText((Join-Path $Dir "mail.sig"), [Convert]::ToBase64String($sig), (New-Object Text.UTF8Encoding($false)))
-Write-Host "서명 완료: mail.sig (우편 $(@($j.mails).Count)개)"
+# 앱이 읽는 파일: 우편 내용(base64) + 서명을 한 파일에 (둘이 따로 갱신되어 어긋나는 일이 없게)
+$envelope = '{"data":"' + [Convert]::ToBase64String($data) + '","sig":"' + [Convert]::ToBase64String($sig) + '"}'
+[IO.File]::WriteAllText((Join-Path $Dir "mail.signed.json"), $envelope, (New-Object Text.UTF8Encoding($false)))
+Remove-Item (Join-Path $Dir "mail.sig") -ErrorAction SilentlyContinue
+Write-Host "서명 완료: mail.signed.json (우편 $(@($j.mails).Count)개)"
