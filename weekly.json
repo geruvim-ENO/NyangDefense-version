@@ -1,0 +1,11 @@
+{
+  "type": "weekly",
+  "days": [
+    { "kind": "gold", "amount": 5000 },
+    { "kind": "catnip", "amount": 50 },
+    { "kind": "gold", "amount": 10000 },
+    { "kind": "catnip", "amount": 100 },
+    { "kind": "yellow", "amount": 5 }
+  ],
+  "final": { "kind": "red", "amount": 5 }
+}
